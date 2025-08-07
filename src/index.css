@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* Por padrão, a área de impressão é invisível */
+#print-area {
+  display: none;
+}
+
+/* Regras que se aplicam SOMENTE durante a impressão */
+@media print {
+  /* Esconde o container principal da nossa aplicação */
+  .app-container {
+    display: none;
+  }
+  
+  /* Mostra a nossa área de impressão com o código ZPL */
+  #print-area {
+    display: block;
+    font-family: 'Courier New', monospace; /* Fonte monoespaçada para texto bruto */
+  }
+
+  /* Tenta remover margens e cabeçalhos que o navegador adiciona */
+  @page {
+    margin: 0;
+    size: auto;
+  }
+
+  body {
+    margin: 0;
+  }
+}
