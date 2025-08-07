@@ -1,69 +1,82 @@
-# React + TypeScript + Vite
+# Gerador de Etiquetas - Iron Mountain
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Uma aplicação web simples e eficiente para gerar sequências de etiquetas de processos com pré-visualização e suporte à impressão em formato ZPL.
 
-Currently, two official plugins are available:
+![Pré-visualização da Aplicação](/public/preview.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ✨ Funcionalidades
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Geração Sequencial:** Crie múltiplas etiquetas a partir de um ID de pacote e uma quantidade.
+- **Pré-visualização Instantânea:** Veja uma representação visual de cada etiqueta, incluindo o código de barras, antes de imprimir.
+- **Impressão Flexível:** Imprima uma única etiqueta individualmente ou todas de uma vez.
+- **Suporte a ZPL:** A impressão gera um texto formatado em ZPL, ideal para impressoras térmicas profissionais (como Zebra).
+- **Interface Limpa:** Layout responsivo e funcional com um cabeçalho fixo e botões de ação claros.
+- **Limpeza Rápida:** Um botão para limpar os campos de entrada e os resultados com um único clique.
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Tecnologias Utilizadas
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Este projeto foi construído com as seguintes tecnologias:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **[Vite](https://vitejs.dev/):** Ferramenta de build e servidor de desenvolvimento extremamente rápido.
+- **[React](https://react.dev/):** Biblioteca para construir a interface do usuário.
+- **[TypeScript](https://www.typescriptlang.org/):** Superset do JavaScript que adiciona tipagem estática.
+- **[Tailwind CSS](https://tailwindcss.com/):** Framework de CSS utility-first para estilização rápida.
+- **[JsBarcode](https://github.com/lindell/JsBarcode):** Usado para gerar a imagem do código de barras na pré-visualização.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+## 🔧 Como Rodar o Projeto
+
+Siga os passos abaixo para executar o projeto em seu ambiente local.
+
+### **Pré-requisitos**
+
+- Você precisa ter o [Node.js](https://nodejs.org/en) (versão 18 ou superior) instalado.
+- Um gerenciador de pacotes como `npm` ou `yarn`.
+
+### **Instalação**
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+    ```
+
+2.  **Navegue até a pasta do projeto:**
+    ```bash
+    cd seu-repositorio
+    ```
+
+3.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
+
+4.  **Execute o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
+
+5.  Abra seu navegador e acesse `http://localhost:5173` (ou a porta que o Vite indicar no terminal).
+
+---
+
+## 📋 Como Usar
+
+1.  **Insira os Dados:** Preencha o campo "Nº da Etiqueta do Pacote" e defina a "Quantidade" de processos.
+2.  **Gere a Pré-visualização:** Clique no botão "Gerar". Os cards com as pré-visualizações de cada etiqueta aparecerão na tela.
+3.  **Imprima:**
+    - Para imprimir uma etiqueta específica, clique no botão "Imprimir esta" dentro do card correspondente.
+    - Para imprimir todas as etiquetas da lista, clique no botão "Imprimir Todas".
+4.  **Caixa de Diálogo de Impressão:** Ao imprimir, a caixa de diálogo do seu navegador será aberta. **Selecione a sua impressora Zebra** (ou outra compatível com ZPL) como destino. O driver da impressora interpretará o texto enviado como comandos ZPL.
+5.  **Limpar:** Use o botão "Limpar" para resetar os campos e a lista de etiquetas geradas.
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
