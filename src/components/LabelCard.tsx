@@ -1,6 +1,7 @@
 // src/components/LabelCard.tsx
 import { useRef, useEffect } from 'react';
 import JsBarcode from 'jsbarcode';
+import { Button } from './ui';
 
 // Função que gera o ZPL para UMA etiqueta.
 // Podemos mantê-la aqui ou em um arquivo de 'utils'.
@@ -44,12 +45,11 @@ export function LabelCard({ labelId, onPrint }: LabelCardProps) {
     <div className="border border-gray-300 rounded-lg p-4 flex flex-col items-center text-center shadow-sm bg-white">
       <p className="font-mono text-sm font-semibold break-all">{labelId}</p>
       <svg ref={barcodeRef} className="my-2"></svg>
-      <button
+      <Button
         onClick={handlePrintThisLabel}
-        className="w-full mt-2 bg-blue-500 text-white text-sm font-bold py-1 px-3 rounded hover:bg-blue-600 transition-colors cursor-pointer"
       >
         Imprimir etiqueta
-      </button>
+      </Button>
     </div>
   );
 }
