@@ -1,9 +1,9 @@
-import { LabelCard } from './components/LabelCard';
-import { Header } from './components/Header';
+import { Footer, Header } from './components/global';
 import { useLabelGenerator } from './hooks/useLabelGenerator';
 import { Button, Input, Label } from './components/ui';
 import { Toaster } from './components/ui/sonner';
 import { Loader2 } from 'lucide-react';
+import { LabelCard } from './components/labelCard';
 
 function App() {
    const {
@@ -23,9 +23,9 @@ function App() {
 
   return (
     <>
-      <div className="app-container min-h-screen bg-muted pt-20">
+      <div className="app-container min-h-screen flex flex-col bg-muted ">
         <Header />
-        <main className="w-full max-w-5xl mx-auto px-4 sm:px-8">
+        <main className="w-full max-w-5xl mx-auto px-4 sm:px-8 py-20 flex-grow">
           <div className="bg-background rounded-lg shadow-md p-6 mb-6">
             <div className=' mb-6'>
               <h1 className="text-2xl font-bold">Gerar etiquetas</h1>
@@ -94,6 +94,7 @@ function App() {
             </>
           )}
         </main>
+        <Footer />
       </div>
       
       <pre id="print-area">{zplToPrint}</pre>
