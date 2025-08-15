@@ -75,8 +75,3 @@ Siga os passos abaixo para executar o projeto em seu ambiente local.
 4.  **Caixa de Diálogo de Impressão:** Ao imprimir, a caixa de diálogo do seu navegador será aberta. **Selecione a sua impressora Zebra** (ou outra compatível com ZPL) como destino. O driver da impressora interpretará o texto enviado como comandos ZPL.
 5.  **Limpar:** Use o botão "Limpar" para resetar os campos e a lista de etiquetas geradas.
 
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
