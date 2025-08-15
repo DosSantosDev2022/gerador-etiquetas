@@ -1,7 +1,7 @@
 // src/components/LabelCard.tsx
 import { useRef, useEffect } from 'react';
 import JsBarcode from 'jsbarcode';
-import { Button } from './ui';
+import { Button } from '@/components/ui';
 
 // Função que gera o ZPL para UMA etiqueta.
 // Podemos mantê-la aqui ou em um arquivo de 'utils'.
@@ -21,7 +21,7 @@ interface LabelCardProps {
   onPrint: (zplCode: string) => void; // Função que será chamada para imprimir
 }
 
-export function LabelCard({ labelId, onPrint }: LabelCardProps) {
+const LabelCard = ({ labelId, onPrint }: LabelCardProps) => {
   const barcodeRef = useRef<SVGSVGElement | null>(null);
 
   // Gera a imagem do código de barras para a pré-visualização
@@ -53,3 +53,5 @@ export function LabelCard({ labelId, onPrint }: LabelCardProps) {
     </div>
   );
 }
+
+export { LabelCard }

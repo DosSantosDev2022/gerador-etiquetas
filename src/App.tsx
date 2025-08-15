@@ -1,9 +1,8 @@
-import { Footer, Header } from './components/global';
+import { Footer, Header , LabelCard } from './components/global';
 import { useLabelGenerator } from './hooks/useLabelGenerator';
 import { Button, Input, Label } from './components/ui';
 import { Toaster } from './components/ui/sonner';
 import { Loader2 } from 'lucide-react';
-import { LabelCard } from './components/labelCard';
 
 function App() {
    const {
