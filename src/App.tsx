@@ -1,17 +1,12 @@
-import { LabelCard } from '../components/LabelCard';
-import { Header } from '../components/Header';
-import { useLabelGenerator } from '../hooks/useLabelGenerator';
-import { Button, Input, Label } from '../components/ui';
-import { Toaster } from '../components/ui/sonner';
+import { LabelCard } from './components/LabelCard';
+import { Header } from './components/Header';
+import { useLabelGenerator } from './hooks/useLabelGenerator';
+import { Button, Input, Label } from './components/ui';
+import { Toaster } from './components/ui/sonner';
 import { Loader2 } from 'lucide-react';
-import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/labelPage')({
-  component: LabelPage,
-})
-
-function LabelPage() {
-  const {
+function App() {
+   const {
     packageId,
     setPackageId,
     processQuantity,
@@ -29,10 +24,11 @@ function LabelPage() {
   return (
     <>
       <div className="app-container min-h-screen bg-muted pt-20">
-        <div className="w-full max-w-5xl mx-auto px-4 sm:px-8">
+        <Header />
+        <main className="w-full max-w-5xl mx-auto px-4 sm:px-8">
           <div className="bg-background rounded-lg shadow-md p-6 mb-6">
             <div className=' mb-6'>
-              <h1 className="text-2xl font-bold">Gerar etiquetas TJSP</h1>
+              <h1 className="text-2xl font-bold">Gerar etiquetas</h1>
               <span className='text-muted-foreground'>Insira uma etiqueta e adicione a quantidade para gerar a sequência.</span>
             </div>
             <form onSubmit={handleGenerateLabels} className="flex flex-col sm:flex-row sm:items-end sm:space-x-4 space-y-4 sm:space-y-0">
@@ -97,7 +93,7 @@ function LabelPage() {
               
             </>
           )}
-        </div>
+        </main>
       </div>
       
       <pre id="print-area">{zplToPrint}</pre>
@@ -106,3 +102,4 @@ function LabelPage() {
   );
 }
 
+export default App;
