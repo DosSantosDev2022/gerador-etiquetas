@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 // 1. CONSTANTES E TIPOS
 // Definir o limite máximo como uma constante torna o código mais legível.
 // ==========================================================
-const MAX_LABELS = 20;
+const MAX_LABELS = 50;
 
 
 export const useLabelGenerator = () => {
