@@ -111,7 +111,7 @@ export const useLabelGenerator = () => {
     // 4. Cria um link <a> invisível para iniciar o download
     const a = document.createElement('a');
     a.href = url;
-    a.download = `etiquetas-${packageId}.zpl`; // Nome do arquivo
+    a.download = `etiquetas-${packageId}.txt`; // Nome do arquivo
     document.body.appendChild(a);
     a.click();
 

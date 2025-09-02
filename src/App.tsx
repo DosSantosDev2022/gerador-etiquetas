@@ -76,13 +76,15 @@ function App() {
             <>
               <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold">Etiquetas Geradas</h2>
-                  <Button onClick={handleDownloadZplFile} variant="outline">
-                    <Download className="mr-2 h-4 w-4" />
-                    Baixar .zpl
-                  </Button>
-                <Button onClick={handlePrintAll}>
-                  Imprimir Todas ({generatedLabels.length})
-                </Button>
+                  <div className='flex items-center justify-end gap-2'>
+                      <Button onClick={handleDownloadZplFile} variant="outline">
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar .zpl
+                    </Button>
+                    <Button onClick={handlePrintAll}>
+                      Imprimir Todas ({generatedLabels.length})
+                    </Button>
+                  </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto border max-h-[568px] scrollbar-custom p-2 rounded-2xl border-border">
                 {generatedLabels.map((label) => (
