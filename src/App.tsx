@@ -3,7 +3,7 @@ import { Footer, Header , LabelCard } from './components/global';
 import { useLabelGenerator } from './hooks/useLabelGenerator';
 import { Button, Input, Label } from './components/ui';
 import { Toaster } from './components/ui/sonner';
-import { Loader2 } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 
 function App() {
   // 1. AJUSTE: Removemos 'zplToPrint' e 'handlePrintRequest' e adicionamos 'handlePrintSingleLabel'
@@ -17,7 +17,8 @@ function App() {
     handleGenerateLabels,
     handlePrintAll,
     handleClearAll,
-    handlePrintSingleLabel, // <-- A nova função para impressão individual
+    handlePrintSingleLabel,
+    handleDownloadZplFile
   } = useLabelGenerator();
 
   return (
@@ -75,6 +76,10 @@ function App() {
             <>
               <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold">Etiquetas Geradas</h2>
+                  <Button onClick={handleDownloadZplFile} variant="outline">
+                    <Download className="mr-2 h-4 w-4" />
+                    Baixar .zpl
+                  </Button>
                 <Button onClick={handlePrintAll}>
                   Imprimir Todas ({generatedLabels.length})
                 </Button>

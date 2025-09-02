@@ -24,8 +24,8 @@ export const useLabelGenerator = () => {
   const [processQuantity, setProcessQuantity] = useState<number>(5);
   const [generatedLabels, setGeneratedLabels] = useState<string[]>([]);
 
+  // ... (Funções sendZplToPrinter, handleGenerateLabels, etc. continuam iguais)
   const sendZplToPrinter = (zplCode: string) => {
-    // ... (esta função continua exatamente a mesma da resposta anterior)
     setIsLoading(true);
     try {
       BrowserPrint.getDefaultDevice("printer", (device: any) => {
@@ -55,17 +55,13 @@ export const useLabelGenerator = () => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      if (!packageId.trim()) {
-        toast.error('Por favor, insira o número da etiqueta do pacote.');
-        return;
-      }
-      if (processQuantity > MAX_LABELS) {
-        toast.error(`A quantidade máxima de etiquetas permitida é ${MAX_LABELS}.`);
-        return;
-      }
-      if (processQuantity <= 0) {
-        toast.error('A quantidade deve ser de no mínimo 1.');
-        return;
+      // ... (lógica de validação)
+      if (!packageId.trim() || processQuantity <= 0 || processQuantity > MAX_LABELS) {
+         if (!packageId.trim()) toast.error('Por favor, insira o número da etiqueta.');
+         if (processQuantity <= 0) toast.error('A quantidade deve ser de no mínimo 1.');
+         if (processQuantity > MAX_LABELS) toast.error(`A quantidade máxima é ${MAX_LABELS}.`);
+         setIsLoading(false);
+         return;
       }
       setGeneratedLabels([]);
       setTimeout(() => {
@@ -76,30 +72,53 @@ export const useLabelGenerator = () => {
         }
         setGeneratedLabels(labels);
         toast.success(`${labels.length} etiquetas geradas!`);
-      }, 500);
-    } finally {
-      setTimeout(() => {
         setIsLoading(false);
       }, 500);
+    } catch (e) {
+      setIsLoading(false);
     }
   };
   
   const handlePrintAll = () => {
-    if (generatedLabels.length === 0) {
-        toast.warning("Nenhuma etiqueta gerada para imprimir.");
-        return;
-    }
+    if (generatedLabels.length === 0) return toast.warning("Nenhuma etiqueta para imprimir.");
     const allZpl = generatedLabels.map(labelId => generateZplForLabel(labelId)).join('\n');
     sendZplToPrinter(allZpl);
   };
 
-  /**
-   * NOVA FUNÇÃO: Imprime uma única etiqueta.
-   * Ela recebe o ID da etiqueta, gera o ZPL e envia para a impressora.
-   */
   const handlePrintSingleLabel = (labelId: string) => {
     const zplCode = generateZplForLabel(labelId);
     sendZplToPrinter(zplCode);
+  };
+
+  /**
+   * NOVO: Função para gerar e baixar o arquivo ZPL completo.
+   */
+  const handleDownloadZplFile = () => {
+    if (generatedLabels.length === 0) {
+      toast.warning("Nenhuma etiqueta gerada para baixar.");
+      return;
+    }
+
+    // 1. Gera a string ZPL completa
+    const allZpl = generatedLabels.map(labelId => generateZplForLabel(labelId)).join('\n');
+
+    // 2. Cria um "Blob", que é um objeto semelhante a um arquivo em memória
+    const blob = new Blob([allZpl], { type: 'text/plain' });
+
+    // 3. Cria uma URL temporária para o Blob
+    const url = URL.createObjectURL(blob);
+    
+    // 4. Cria um link <a> invisível para iniciar o download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `etiquetas-${packageId}.zpl`; // Nome do arquivo
+    document.body.appendChild(a);
+    a.click();
+
+    // 5. Limpa a URL e o link para liberar memória
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Arquivo .zpl gerado com sucesso!");
   };
 
   const handleClearAll = () => {
@@ -118,6 +137,7 @@ export const useLabelGenerator = () => {
     handleGenerateLabels,
     handlePrintAll,
     handleClearAll,
-    handlePrintSingleLabel, // <-- Exportando a nova função
+    handlePrintSingleLabel,
+    handleDownloadZplFile, // <-- Exportando a nova função
   };
 };
