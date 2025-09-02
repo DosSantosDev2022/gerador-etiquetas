@@ -1,3 +1,4 @@
+// src/App.tsx
 import { Footer, Header , LabelCard } from './components/global';
 import { useLabelGenerator } from './hooks/useLabelGenerator';
 import { Button, Input, Label } from './components/ui';
@@ -5,20 +6,19 @@ import { Toaster } from './components/ui/sonner';
 import { Loader2 } from 'lucide-react';
 
 function App() {
-   const {
+  // 1. AJUSTE: Removemos 'zplToPrint' e 'handlePrintRequest' e adicionamos 'handlePrintSingleLabel'
+  const {
     packageId,
     setPackageId,
     processQuantity,
     setProcessQuantity,
     generatedLabels,
-    zplToPrint,
-    handleGenerateLabels,
-    handlePrintRequest,
     loading,
+    handleGenerateLabels,
     handlePrintAll,
     handleClearAll,
+    handlePrintSingleLabel, // <-- A nova função para impressão individual
   } = useLabelGenerator();
-
 
   return (
     <>
@@ -44,13 +44,9 @@ function App() {
                 <Input
                   type="number" id="processQuantity" value={processQuantity} onChange={(e) => setProcessQuantity(Number(e.target.value))}
                   min="1" className="mt-1 block w-full border border-border rounded-md shadow-sm p-2"
-                  
                 />
               </div>
               
-              {/* ========================================================== */}
-              {/* 2. ADIÇÃO DO BOTÃO "LIMPAR" AO LADO DO BOTÃO "GERAR"     */}
-              {/* ========================================================== */}
               <div className="flex space-x-2">
                 <Button type="submit" disabled={loading}>
                   {loading ? (
@@ -63,7 +59,7 @@ function App() {
                   )}
                 </Button>
                 <Button 
-                  type="button" // Importante: 'type="button"' evita que o formulário seja enviado
+                  type="button"
                   onClick={handleClearAll}
                   variant={'destructive'}
                   title="Limpar campos e resultados"
@@ -72,32 +68,31 @@ function App() {
                   Limpar etiquetas
                 </Button>
               </div>
-
             </form>
           </div>
-         
+          
           {generatedLabels.length > 0 && (
             <>
               <div className="flex justify-between items-center mb-4">
-                 <h2 className="text-xl font-bold">Etiquetas Geradas</h2>
+                  <h2 className="text-xl font-bold">Etiquetas Geradas</h2>
                 <Button onClick={handlePrintAll}>
                   Imprimir Todas ({generatedLabels.length})
                 </Button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto border max-h-[568px] p-2 rounded-2xl border-border">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto border max-h-[568px] scrollbar-custom p-2 rounded-2xl border-border">
                 {generatedLabels.map((label) => (
-                   <LabelCard key={label} labelId={label} onPrint={handlePrintRequest} />
+                  // 2. AJUSTE: Passamos a nova função 'handlePrintSingleLabel' para o onPrint.
+                  <LabelCard key={label} labelId={label} onPrint={handlePrintSingleLabel} />
                 ))}
               </div>
-              
             </>
           )}
         </main>
         <Footer />
       </div>
       
-      <pre id="print-area">{zplToPrint}</pre>
-      <Toaster position="top-center"  richColors/>
+      {/* 3. AJUSTE: A tag <pre> foi removida pois não é mais necessária com a impressão direta. */}
+      <Toaster position="top-center" richColors/>
     </>
   );
 }

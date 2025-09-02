@@ -1,24 +1,11 @@
-// src/components/LabelCard.tsx
+// src/components/global/LabelCard.tsx
 import { useRef, useEffect } from 'react';
 import JsBarcode from 'jsbarcode';
 import { Button } from '@/components/ui';
 
-// Função que gera o ZPL para UMA etiqueta.
-// Podemos mantê-la aqui ou em um arquivo de 'utils'.
-function generateZplForLabel(labelId: string): string {
-  const zplTemplate = `
-^XA
-^FO20,20^A0N,30,30^FDETIQUETA DE PROCESSO^FS
-^FO20,60^BY2,2.0,60^BCN,60,N,N,N,A^FD${labelId}^FS
-^FO40,130^A0N,25,25^FD${labelId}^FS
-^XZ
-`;
-  return zplTemplate.trim();
-}
-
 interface LabelCardProps {
   labelId: string;
-  onPrint: (zplCode: string) => void; // Função que será chamada para imprimir
+  onPrint: (labelId: string) => void;
 }
 
 const LabelCard = ({ labelId, onPrint }: LabelCardProps) => {
@@ -32,26 +19,27 @@ const LabelCard = ({ labelId, onPrint }: LabelCardProps) => {
         displayValue: false,
         width: 1.5,
         height: 40,
+        margin: 10,
       });
     }
   }, [labelId]);
 
   const handlePrintThisLabel = () => {
-    const zpl = generateZplForLabel(labelId);
-    onPrint(zpl); // Chama a função do componente pai para realizar a impressão
+    onPrint(labelId);
   };
 
   return (
-    <div className="border border-gray-300 rounded-lg p-4 flex flex-col items-center text-center shadow-sm bg-white">
+    <div className="border border-border rounded-lg p-2 flex flex-col items-center text-center shadow-sm bg-background w-full max-w-sm mx-auto">
       <p className="font-mono text-sm font-semibold break-all">{labelId}</p>
-      <svg ref={barcodeRef} className="my-2"></svg>
-      <Button
-        onClick={handlePrintThisLabel}
-      >
-        Imprimir etiqueta
+      
+      {/* O SVG agora ocupa a largura total do seu contêiner, respeitando o padding */}
+      <svg ref={barcodeRef} className="my-2 w-full"></svg>
+
+      <Button onClick={handlePrintThisLabel} variant="default" size="sm">
+        Imprimir
       </Button>
     </div>
   );
 }
 
-export { LabelCard }
+export { LabelCard };
