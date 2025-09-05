@@ -2,76 +2,68 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-/**
- * Hook personalizado para gerenciar a lógica de criação e impressão de etiquetas.
- * Ele encapsula o estado e as funções relacionadas à geração de etiquetas,
- * tornando o componente principal mais limpo e focado na UI.
- */
+declare const BrowserPrint: any;
 
-// ==========================================================
-// 1. CONSTANTES E TIPOS
-// Definir o limite máximo como uma constante torna o código mais legível.
-// ==========================================================
-const MAX_LABELS = 50;
+const MAX_LABELS = 100;
 
+// Função auxiliar para gerar o template ZPL de uma etiqueta
+const generateZplForLabel = (labelId: string): string => {
+  const zplTemplate = `
+  ^XA
+  ^FO20,20^A0N,30,30^FDETIQUETA DE PROCESSO^FS
+  ^FO20,60^BY2,2.0,60^BCN,60,N,N,N,A^FD${labelId}^FS
+  ^FO40,130^A0N,25,25^FD${labelId}^FS
+  ^XZ
+  `;
+  return zplTemplate.trim();
+};
 
 export const useLabelGenerator = () => {
-  // ==========================================================
-  // 1. ESTADO DO COMPONENTE
-  // ==========================================================
   const [packageId, setPackageId] = useState('9001941457766');
-  const [loading, setIsLoading] = useState(false)
+  const [loading, setIsLoading] = useState(false);
   const [processQuantity, setProcessQuantity] = useState<number>(5);
   const [generatedLabels, setGeneratedLabels] = useState<string[]>([]);
-  const [zplToPrint, setZplToPrint] = useState('');
 
-  // ==========================================================
-  // 2. FUNÇÕES DE MANIPULAÇÃO DO ESTADO
-  // ==========================================================
-
-  /**
-   * Define o código ZPL para impressão e aciona a janela de impressão do navegador.
-   * @param zplCode - O código ZPL (string) a ser impresso.
-   */
-  const handlePrintRequest = (zplCode: string) => {
-    setZplToPrint(zplCode);
-    setTimeout(() => {
-      window.print();
-    }, 100); // Um pequeno atraso para garantir que o estado seja atualizado no DOM.
+  // ... (Funções sendZplToPrinter, handleGenerateLabels, etc. continuam iguais)
+  const sendZplToPrinter = (zplCode: string) => {
+    setIsLoading(true);
+    try {
+      BrowserPrint.getDefaultDevice("printer", (device: any) => {
+        if (device) {
+          device.send(zplCode, () => {
+            toast.success('Impressão enviada com sucesso!');
+            setIsLoading(false);
+          }, (error: any) => {
+            toast.error(`Erro ao enviar para impressora: ${error}`);
+            setIsLoading(false);
+          });
+        } else {
+          toast.error("Nenhuma impressora padrão encontrada. Verifique o Zebra Browser Print.");
+          setIsLoading(false);
+        }
+      }, (error: any) => {
+        toast.error(`Erro ao comunicar com o Browser Print: ${error}.`);
+        setIsLoading(false);
+      });
+    } catch (error) {
+        toast.error("Não foi possível acessar o Zebra Browser Print. Verifique se ele está instalado e em execução.");
+        setIsLoading(false);
+    }
   };
 
-  /**
-   * Gera uma lista de etiquetas com base no ID do pacote e na quantidade.
-   * @param e - O evento do formulário para prevenir o comportamento padrão.
-   */
   const handleGenerateLabels = (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      // 1. Ativamos o loading logo no início do bloco 'try'
       setIsLoading(true);
-
-      // 2. Realizamos todas as validações. Se alguma falhar, ela vai
-      // pular para o bloco 'finally' ao sair da função com 'return'.
-      if (!packageId.trim()) {
-        toast.error('Por favor, insira o número da etiqueta do pacote.');
-        return;
+      // ... (lógica de validação)
+      if (!packageId.trim() || processQuantity <= 0 || processQuantity > MAX_LABELS) {
+         if (!packageId.trim()) toast.error('Por favor, insira o número da etiqueta.');
+         if (processQuantity <= 0) toast.error('A quantidade deve ser de no mínimo 1.');
+         if (processQuantity > MAX_LABELS) toast.error(`A quantidade máxima é ${MAX_LABELS}.`);
+         setIsLoading(false);
+         return;
       }
-
-      if (processQuantity > MAX_LABELS) {
-        toast.error(`A quantidade máxima de etiquetas permitida é ${MAX_LABELS}.`);
-        return; // A função para aqui, mas o 'finally' AINDA SERÁ EXECUTADO.
-      }
-
-      if (processQuantity <= 0) {
-        toast.error('A quantidade deve ser de no mínimo 1.');
-        return;
-      }
-      
-      // 3. Lógica principal (se as validações passarem)
-      setGeneratedLabels([]); // Limpa as etiquetas antigas
-
-      // Usando setTimeout para simular a operação, como antes
+      setGeneratedLabels([]);
       setTimeout(() => {
         const labels: string[] = [];
         for (let i = 1; i <= processQuantity; i++) {
@@ -80,48 +72,61 @@ export const useLabelGenerator = () => {
         }
         setGeneratedLabels(labels);
         toast.success(`${labels.length} etiquetas geradas!`);
-      }, 500);
-
-    } finally {
-      setTimeout(() => {
         setIsLoading(false);
       }, 500);
+    } catch (e) {
+      setIsLoading(false);
     }
   };
   
-  /**
-   * Compila todas as etiquetas geradas em um único código ZPL e solicita a impressão.
-   */
   const handlePrintAll = () => {
-    if (generatedLabels.length === 0) return;
+    if (generatedLabels.length === 0) return toast.warning("Nenhuma etiqueta para imprimir.");
+    const allZpl = generatedLabels.map(labelId => generateZplForLabel(labelId)).join('\n');
+    sendZplToPrinter(allZpl);
+  };
 
-    const allZpl = generatedLabels.map(labelId => {
-      const zplTemplate = `
-      ^XA
-      ^FO20,20^A0N,30,30^FDETIQUETA DE PROCESSO^FS
-      ^FO20,60^BY2,2.0,60^BCN,60,N,N,N,A^FD${labelId}^FS
-      ^FO40,130^A0N,25,25^FD${labelId}^FS
-      ^XZ
-      `;
-      return zplTemplate.trim();
-    }).join('\n\n');
-
-    handlePrintRequest(allZpl);
+  const handlePrintSingleLabel = (labelId: string) => {
+    const zplCode = generateZplForLabel(labelId);
+    sendZplToPrinter(zplCode);
   };
 
   /**
-   * Limpa todos os campos de entrada e a lista de etiquetas geradas.
+   * NOVO: Função para gerar e baixar o arquivo ZPL completo.
    */
+  const handleDownloadZplFile = () => {
+    if (generatedLabels.length === 0) {
+      toast.warning("Nenhuma etiqueta gerada para baixar.");
+      return;
+    }
+
+    // 1. Gera a string ZPL completa
+    const allZpl = generatedLabels.map(labelId => generateZplForLabel(labelId)).join('\n');
+
+    // 2. Cria um "Blob", que é um objeto semelhante a um arquivo em memória
+    const blob = new Blob([allZpl], { type: 'text/plain' });
+
+    // 3. Cria uma URL temporária para o Blob
+    const url = URL.createObjectURL(blob);
+    
+    // 4. Cria um link <a> invisível para iniciar o download
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `etiquetas-${packageId}.txt`; // Nome do arquivo
+    document.body.appendChild(a);
+    a.click();
+
+    // 5. Limpa a URL e o link para liberar memória
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Arquivo .zpl gerado com sucesso!");
+  };
+
   const handleClearAll = () => {
     setPackageId('');
     setProcessQuantity(1);
     setGeneratedLabels([]);
   };
 
-  // ==========================================================
-  // 3. RETORNO DO HOOK
-  // Expondo todos os estados e funções que a UI precisará.
-  // ==========================================================
   return {
     loading,
     packageId,
@@ -129,10 +134,10 @@ export const useLabelGenerator = () => {
     processQuantity,
     setProcessQuantity,
     generatedLabels,
-    zplToPrint,
-    handlePrintRequest,
     handleGenerateLabels,
     handlePrintAll,
     handleClearAll,
+    handlePrintSingleLabel,
+    handleDownloadZplFile, // <-- Exportando a nova função
   };
 };
