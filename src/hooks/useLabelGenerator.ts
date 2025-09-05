@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 declare const BrowserPrint: any;
 
-const MAX_LABELS = 50;
+const MAX_LABELS = 100;
 
 // Função auxiliar para gerar o template ZPL de uma etiqueta
 const generateZplForLabel = (labelId: string): string => {
