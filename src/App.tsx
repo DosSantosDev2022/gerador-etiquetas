@@ -6,7 +6,6 @@ import { Toaster } from './components/ui/sonner';
 import { Download, Loader2, Usb } from 'lucide-react';
 
 function App() {
-  // ALTERAÇÃO 1: Destruturando os novos estados e funções do hook WebUSB
   const {
     packageId,
     setPackageId,
@@ -14,12 +13,12 @@ function App() {
     setProcessQuantity,
     generatedLabels,
     loading,
-    printerConnected, // Novo estado para saber se a impressora está conectada
+    printerConnected,
     handleGenerateLabels,
     handleClearAll,
-    handleConnectPrinter, // Nova função para conectar
-    handlePrintWebUsb,    // Nova função para imprimir uma etiqueta
-    handlePrintAllWebUsb, // Nova função para imprimir todas
+    handleConnectPrinter,
+    handlePrintWebUsb, 
+    handlePrintAllWebUsb,
     handleDownloadZplFile
   } = useLabelGenerator();
 
