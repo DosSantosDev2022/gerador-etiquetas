@@ -132,8 +132,58 @@ export const useLabelGenerator = () => {
     }
   };
 
-  const handleClearAll = () => { /* ... sua lógica existente ... */ };
-  const handleDownloadZplFile = () => { /* ... sua lógica existente ... */ };
+  const handleClearAll = () => {
+    // 1. Limpa o array de etiquetas, o que fará a lista de resultados desaparecer da tela.
+    setGeneratedLabels([]);
+
+    // 2. Limpa o campo de input da etiqueta do pacote.
+    setPackageId('');
+
+    // 3. Redefine a quantidade para o valor mínimo, para que o usuário possa começar de novo.
+    // Usar o valor inicial '5' também seria uma opção. Escolhemos '1' por ser o mínimo válido.
+    setProcessQuantity(1);
+
+    // 4. (Opcional, mas recomendado) Exibe uma notificação para confirmar a ação.
+    toast.info("Campos e resultados limpos!");
+  };
+
+  const handleDownloadZplFile = () => {
+    // 1. Verifica se existem etiquetas para baixar. Se não houver, exibe um aviso.
+    if (generatedLabels.length === 0) {
+      toast.warning("Não há etiquetas geradas para baixar.");
+      return;
+    }
+
+    // 2. Concatena todos os códigos ZPL em uma única string, separados por uma nova linha.
+    // Isso garante que a impressora trate cada um como um comando de impressão separado.
+    const allZpl = generatedLabels.map(labelId => generateZplForLabel(labelId)).join('\n');
+
+    // 3. Cria um Blob (Binary Large Object). Pense nisso como um arquivo virtual em memória.
+    // O tipo 'text/plain' indica que é um arquivo de texto simples.
+    const blob = new Blob([allZpl], { type: 'text/plain' });
+
+    // 4. Cria uma URL temporária para o nosso Blob. O navegador pode usar essa URL para acessar o "arquivo".
+    const url = URL.createObjectURL(blob);
+
+    // 5. Cria um elemento de link (<a>) dinamicamente. Ele não será visível na página.
+    const a = document.createElement('a');
+
+    // 6. Configura o link:
+    a.href = url; // Aponta o link para a URL do nosso arquivo.
+    a.download = 'etiquetas.txt'; // Define o nome do arquivo que será baixado.
+
+    // 7. Adiciona o link ao corpo do documento para que possamos "clicá-lo".
+    document.body.appendChild(a);
+
+    // 8. Simula um clique no link, o que aciona o download no navegador.
+    a.click();
+
+    // 9. Limpeza: remove o link do documento e revoga a URL para liberar memória.
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast.success("Download do arquivo .zpl iniciado!");
+  };
 
   return {
     loading,
