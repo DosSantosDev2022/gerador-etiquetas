@@ -9,13 +9,19 @@ const MAX_LABELS = 100;
 const generateZplForLabel = (labelId: string): string => {
   // ... ZPL template ...
   const zplTemplate = `
-  ^XA
-  ^FO20,20^A0N,30,30^FDETIQUETA DE PROCESSO^FS
-  ^FO20,60^BY2,2.0,60^BCN,60,N,N,N,A^FD${labelId}^FS
-  ^FO40,130^A0N,25,25^FD${labelId}^FS
-  ^XZ
-  `;
-  return zplTemplate.trim();
+    ^JZN
+    ^XA
+    ^MD11
+    ^LH0,0^FS
+    ^FO030,130^GB080,040,002,^FS 
+    ^FO028,130^GD041,020,004,,L^FS
+    ^FO066,130^GD041,020,004,,R^FS
+    ^FO030,030^A0N,030,030,^FDIMB^FS
+    ^FO030,060^BY2,2.0,65^BCN,65,N,N,N,A^FD${labelId}^FS
+    ^FO150,140^A0N,030,030,^FD${labelId}^FS
+    ^XZ
+`;
+return zplTemplate.trim();
 };
 
 export const useLabelGenerator = () => {
